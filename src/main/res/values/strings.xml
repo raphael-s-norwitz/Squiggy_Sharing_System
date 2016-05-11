@@ -1,0 +1,24 @@
+<resources>
+    <string name="app_name">Squiggy</string>
+    <string name="setup">Setup</string>
+    <string name="first_round">First Round</string>
+    <string name="final_round">Final Round</string>
+    <string name="action_settings">Settings</string>
+    <string name="host_string">Host IP address</string>
+    <string name="number_files">Number of files:</string>
+    <string name="security">Security Code:</string>
+    <string name="port">Port Number:</string>
+    <string name="directory">Target Directory:</string>
+    <string name="setup_transfer">Setup Transfer</string>
+    <string name="title_activity_get_file_info">GetFileInfo</string>
+    <string name="Total_packets_received">Total Packets Received: </string>
+    <string name="Total_files_received">Total File Data Recieved: </string>
+    <string name="title_activity_transfer_data">TransferData</string>
+    <string name="Packets_dequeued_1">Total Packets Dequeued from first queue</string>
+    <string name="Packets_processed">Total Packets Processed</string>
+    <string name="Packets_added">Total Packets Added</string>
+    <string name="last_idx">Last Packet Index Recieved</string>
+    <string name="packet_val">Packet Length (bytes)</string>
+
+
+</resources>
