@@ -1,0 +1,103 @@
+Depreciated code.txt
+
+
+Outgoing Transmission:
+
+	/*public outgoingTransmission(int bytes_in_packet, String path_given, int main_port , int bytes_per_chunk) {
+		
+		// use original constructor
+		super(bytes_in_packet, path_given, main_port);
+			
+		
+		// get implied broadcast address, use 255.255.255.0 as a backup
+		broadcast_address = null;
+		
+		try{
+			broadcast_address = getNetworkLocalBroadcastAddressdAsInetAddress();
+			// System.out.println(broadcast_address.getHostName());
+		}
+		catch(IOException e)
+		{
+			try {
+				broadcast_address = InetAddress.getByName("255.255.255.0");
+			} catch (UnknownHostException e1) {
+				System.out.println("Could not bind to broadcast address 255.255.255.0 "
+						+ "because of an UnkownHostException");
+				System.exit(0);
+			}
+		}
+		
+		set_base_constructor_sender(bytes_in_packet, path_given, main_port, bytes_per_chunk);
+		
+	
+		
+	}*/
+	
+	/*
+	 * public outgoingTransmission(int bytes_in_packet, String path_given, int main_port, String given_addr , int bytes_per_chunk) {
+		
+		super(bytes_in_packet, path_given, main_port);
+		
+		broadcast_address = null;
+		
+		try {
+			broadcast_address = InetAddress.getByName(given_addr);
+		} catch (UnknownHostException e1) {
+			System.out.println("Could not bind to address given "
+					+ "because of an UnkownHostException");
+			System.exit(0);
+		}
+		catch(IOException e){
+			e.printStackTrace();
+		}
+		
+		set_base_constructor_sender(bytes_in_packet, path_given, main_port, bytes_per_chunk);
+		
+	}
+	*/
+	
+	/*
+	 * Perform actions needed for all constructors 
+	 */
+	/*public void set_base_constructor_sender(int bytes_in_packet, String path_given, int main_port , int bytes_per_chunk)
+	{
+		// initialize instance variables for senders
+		identifier = identifier_code_random();
+		bytes_in_packet_chunk = bytes_per_chunk; 
+		code_to_file = new HashMap<Integer, File>();
+		
+		// get files and info from files for transfer
+		to_Send = listFilesForFolder(new File(transmission_path));
+		number_of_files = to_Send.size();
+		
+		set_code_to_file(); // populate code_to_file
+		
+		name_packets = new namePopulator(code_to_file, number_of_files, packet_size, bytes_in_packet_chunk, identifier);
+		
+	}*/
+	
+	blindOutgoingTransmission:
+	
+		/*public blindOutgoingTransmission(int bytes_in_packet, String path_given, int main_port, int bytes_per_chunk )
+	{
+		super( bytes_in_packet, path_given, main_port,  bytes_per_chunk );
+	}
+	
+	public blindOutgoingTransmission(int bytes_in_packet, String path_given, int main_port, String given_addr, int bytes_per_chunk)
+	{
+		super( bytes_in_packet, path_given, main_port, given_addr,  bytes_per_chunk);
+	}*/
+	
+	BlindMetaSender:
+	
+		/*public BlindMetaSender(int bytes_in_packet, String path_given, int main_port, int bytes_per_chunk )
+	{
+		super( bytes_in_packet, path_given, main_port,  bytes_per_chunk );
+		this.set_broadcast_name_packets();
+	}
+	
+	public BlindMetaSender(int bytes_in_packet, String path_given, int main_port, String given_addr, int bytes_per_chunk)
+	{
+		super( bytes_in_packet, path_given, main_port, given_addr,  bytes_per_chunk);
+		this.set_broadcast_name_packets();
+	}*/

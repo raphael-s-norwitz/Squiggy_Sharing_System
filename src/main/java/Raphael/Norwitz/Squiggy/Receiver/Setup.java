@@ -1,31 +1,28 @@
 // Property of Raphael Norwitz unauthorized usage or copying is forbidden
 
-package com.example.shannonnorwitz.reciever;
+package Raphael.Norwitz.Squiggy.Receiver;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
-import android.widget.TextView;
 
 import java.io.File;
-import java.lang.annotation.Target;
 
 public class Setup extends AppCompatActivity {
 
-    public final static String PACKET_LEN_STR = "com.example.shannonnorwitz.PKT_LEN";
-    public final static String SECURITY_CODE = "com.example.shannonnorwitz.SECURE";
-    public final static String PORT_USED = "com.example.shannonnorwitz.PORT_VAL";
-    public final static String HOST_IP = "com.example.shannonnorwitz.HOST_IP";
-    public final static String NUMBER_OF_FILES = "com.example.shannonnorwitz.NUM_FILES";
-    public final static String TARGET_DIRECTORY = "com.example.shannonnorwitz.TARGET";
+    public final static String PACKET_LEN_STR = "com.dev.shannonnorwitz.PKT_LEN";
+    public final static String SECURITY_CODE = "com.dev.shannonnorwitz.SECURE";
+    public final static String PORT_USED = "com.dev.shannonnorwitz.PORT_VAL";
+    public final static String HOST_IP = "com.dev.shannonnorwitz.HOST_IP";
+    public final static String NUMBER_OF_FILES = "com.dev.shannonnorwitz.NUM_FILES";
+    public final static String TARGET_DIRECTORY = "com.dev.shannonnorwitz.TARGET";
 
     public EditText Packet_length;
     public EditText Security;

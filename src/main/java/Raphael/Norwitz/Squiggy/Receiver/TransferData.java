@@ -1,11 +1,10 @@
 // Property of Raphael Norwitz unauthorized usage or copying is forbidden
-package com.example.shannonnorwitz.reciever;
+package Raphael.Norwitz.Squiggy.Receiver;
 
 import android.content.Intent;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -17,15 +16,11 @@ import android.widget.TextView;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
-import java.net.InetAddress;
 import java.net.MulticastSocket;
-import java.net.Socket;
 import java.net.SocketTimeoutException;
-import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.io.File;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
