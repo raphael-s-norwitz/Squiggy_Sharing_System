@@ -10,6 +10,7 @@
 import java.util.*;
 import java.io.*;
 import java.net.InetAddress;
+import java.net.SocketException;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,10 +28,6 @@ public class dev_blind_transfer implements ActionListener{
 		public JFrame transfer_panel;
 		
 		public blindOutgoingTransmission send_data;
-		
-		
-		
-		
 		public JButton select_file;
 		public String default_path;
 		public JTextField current_path;
@@ -116,7 +113,7 @@ public class dev_blind_transfer implements ActionListener{
 		        	
 		        	// initialize data for this transfer
 		        	send_data = new blindOutgoingTransmission(1472, selection.ret_val, 4848, 1472 - 16, share_through); // TEST get vals from XML or something
-		        	
+		        	System.out.println("Security Code: " + Integer.toString(send_data.blind_outgoing_transmission.identifier));
 		        	/* ok_to_proceed.addActionListener( */  new ActionGui(send_data) /*) */;
 		        	      	
 		          
@@ -148,42 +145,82 @@ public class dev_blind_transfer implements ActionListener{
 			public JFrame transfer_frame;
 			public JPanel control;
 			
-			public BlindMetaSender sendShot;
+			public BlindMetaSender full_metadata;
+			public blindOutgoingTransmission complete_transfer;
+			public transferRound transfer_data;
 			
-			public JButton MetaTransfer;
-			public JButton StartPayload;
-			public JButton StopPayload;
+			public transferThread run_round;
+			public Thread current_run_thread;
+			
+			public JButton metaTransfer;
+			public JButton startPayload;
+			public JButton stopPayload;
+			
+			public boolean another_payload_round;
 			
 			public ActionGui(blindOutgoingTransmission full_transfer)
 			{
-				/*try{
-					System.out.println( "Broadcast " +transmission.getNetworkLocalBroadcastAddressdAsInetAddress().getHostAddress() + "" );
-				}
-				catch(IOException e){
-					e.printStackTrace();
-				}*/
+				another_payload_round = false;
 				
-				sendShot = full_transfer.meta_round();
+				complete_transfer = full_transfer;
+				
+				full_metadata = full_transfer.meta_round();
+				
+				transfer_data = full_transfer.transfer_payload;
+				try {
+					run_round = new transferThread(transfer_data);
+				} catch (SocketException e) {
+					System.out.println("socket issue");
+					e.printStackTrace();
+				}
+				
 				
 				transfer_frame = new JFrame("Control Transfer");
 				control = new JPanel();
-				MetaTransfer = new JButton("Send First Round");
-				StartPayload = new JButton("Start Transfer");
-				StopPayload = new JButton("Stop Transfer");
+				metaTransfer = new JButton("Send First Round");
+				startPayload = new JButton("Start Transfer");
+				stopPayload = new JButton("Stop Transfer");
 				
-				ActionListener send_transfer = new ActionListener(){
+				stopPayload.setEnabled(false);
+				
+				
+				ActionListener send_metadata_on_click = new ActionListener(){
 					public void actionPerformed(ActionEvent ae){
-						/* System.out.println(Arrays.toString(sendShot.broadcast_name_packets[0].getData()) + " " + sendShot.broadcast_name_packets[0].getAddress().getHostName());*/ 
-						sendShot.set_broadcast_name_packets();
-						sendShot.run();
+						full_metadata.run();
 						
 					}
 				};
 				
-				MetaTransfer.addActionListener(send_transfer);
+				metaTransfer.addActionListener(send_metadata_on_click);
+				
+				ActionListener send_payload_onclick = new ActionListener(){
+					public void actionPerformed(ActionEvent ae){
+						// another_payload_round = true;
+						
+						startPayload.setEnabled(false);
+						
+						current_run_thread = new Thread(run_round, "Pthread");
+
+						current_run_thread.start();
+						
+						stopPayload.setEnabled(true);
+						
+					}
+				};
+				
+				ActionListener stop_send_payload_onclick = new ActionListener()  {
+					public void actionPerformed(ActionEvent ae)  {
+						stopPayload.setEnabled(false);
+						current_run_thread.interrupt();
+						startPayload.setEnabled(true);
+					}
+				};
+				
+				startPayload.addActionListener(send_payload_onclick);
+				stopPayload.addActionListener(stop_send_payload_onclick);
 				
 				control.setLayout(new FlowLayout());
-				control.add(MetaTransfer); control.add(StartPayload); control.add(StopPayload);
+				control.add(metaTransfer); control.add(startPayload); control.add(stopPayload);
 				
 				transfer_frame.setLayout( new BorderLayout() );
 				transfer_frame.add(control, BorderLayout.SOUTH );
@@ -198,7 +235,7 @@ public class dev_blind_transfer implements ActionListener{
 			}
 			
 			public void actionPerformed(ActionEvent ae){
-				ActionGui run_command = new ActionGui(sendShot);
+				ActionGui run_command = new ActionGui(complete_transfer);
 				
 				
 				
@@ -219,7 +256,13 @@ public class dev_blind_transfer implements ActionListener{
 				e.printStackTrace();
 			}
 			dev_blind_transfer demo = new dev_blind_transfer(addr);
+			
+			demo.main_frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+			
+			// System.out.println("Security Code: " + Integer.toString(demo.send_data.blind_outgoing_transmission.identifier));
 			demo.main_frame.setVisible(true);
+			
+			
 			// dev_blind_transfer demo = new dev_blind_transfer();
 			/*demo.main_frame.setLayout(new BorderLayout());
 			demo.main_frame.add(main_panel, BorderLayout.SOUTH);

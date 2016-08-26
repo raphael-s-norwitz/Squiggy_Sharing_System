@@ -30,6 +30,9 @@ public class packetPopulator {
 	// hash table from file codes to file codes as bytes
 	public HashMap<Integer, byte[]> code_to_code_bytes;
 	
+	// hash table from file code to taken bytes before transfer
+	public HashMap<Integer, Integer> code_to_taken_payload;
+	
 	
 	
 	// hash table from file codes to Headers for all packets
@@ -48,6 +51,7 @@ public class packetPopulator {
 		
 		code_to_code_bytes = new HashMap<Integer, byte[]>();
 		code_to_head_of_files = new HashMap<Integer, byte[]>();
+		code_to_taken_payload = new HashMap<Integer, Integer>();
 		
 		
 		
@@ -75,6 +79,9 @@ public class packetPopulator {
 			taken_so_far += code_to_code_bytes.get(i).length;
 			
 			code_to_head_of_files.put(i, payload);
+			code_to_taken_payload.put(i, taken_so_far);
+			
+			System.out.println(code_to_taken_payload.get(i));
 			
 			/*
 			 * to be taken to name files
@@ -101,7 +108,7 @@ public class packetPopulator {
 	public static int get_number_packets(File data, int payload_per_packet)
 	{
 		
-		int num_packets =  (int) (data.length() / payload_per_packet) + 1;
+		int num_packets =  (int) (data.length() / payload_per_packet) ;
 		int leftover = (int) data.length()  % payload_per_packet;
 		
 		if (leftover > 0)

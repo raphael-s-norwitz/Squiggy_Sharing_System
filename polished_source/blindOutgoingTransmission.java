@@ -17,10 +17,16 @@ import java.util.Scanner;
  */
 
 
-public class blindOutgoingTransmission extends outgoingTransmission {
+public class blindOutgoingTransmission  {
 	
 	// main instance variables for outgoing packets are transmissions themselves
 	public DatagramPacket[] broadcast_name_packets;
+	public outgoingTransmission blind_outgoing_transmission;
+	
+	public BlindMetaSender first_round_sender;
+	public transferRound transfer_payload;
+	
+	
 	
 	/*
 	 * Constructors 
@@ -28,14 +34,27 @@ public class blindOutgoingTransmission extends outgoingTransmission {
 	
 	public blindOutgoingTransmission(int bytes_in_packet, String path_given, int main_port, int bytes_per_chunk, InetAddress given_addr)
 	{
-		super( bytes_in_packet, path_given, main_port,  bytes_per_chunk, given_addr);
+		blind_outgoing_transmission = new outgoingTransmission( bytes_in_packet, path_given, main_port,  bytes_per_chunk, given_addr);
+		transfer_payload = new transferRound(blind_outgoing_transmission.name_packets, given_addr, main_port);
+		first_round_sender = meta_round();
+	}
+	
+	public blindOutgoingTransmission(int bytes_in_packet, String path_given, int main_port, int bytes_per_chunk)
+	{
+		blind_outgoing_transmission = new outgoingTransmission( bytes_in_packet, path_given, main_port,  bytes_per_chunk);
+		transfer_payload = new transferRound(blind_outgoing_transmission.name_packets);
+		first_round_sender = meta_round();
 	}
 	
 
-	
+	/*
+	 * 
+	 * Do not use if you are not having the classes write broadcast packets
+	 * 
+	 */
 	public void set_broadcast_name_packets()
 	{
-		ArrayList< byte[] > payloads = get_name_packets();
+		ArrayList< byte[] > payloads = blind_outgoing_transmission.get_name_packets();
 		
 		
 		// initialize broadcast_name_packets
@@ -44,13 +63,17 @@ public class blindOutgoingTransmission extends outgoingTransmission {
 		// System.out.println(broadcast_address.getHostAddress().toString());
 			
 		for(int i = 0; i < payloads.size(); i++)
-			broadcast_name_packets[i] = pack_packet(payloads.get(i), broadcast_port, broadcast_address);
+			broadcast_name_packets[i] = outgoingTransmission.pack_packet(payloads.get(i), blind_outgoing_transmission.outgoing_transmission.broadcast_port, blind_outgoing_transmission.broadcast_address);
+		
+		
 	}
 	
 	public BlindMetaSender meta_round()
 	{
-		return new BlindMetaSender( this.packet_size, this.transmission_path, this.broadcast_port,  this.bytes_in_packet_chunk, this.broadcast_address);
+		return new BlindMetaSender(this);
 	}
+	
+	
 	
 	
 	public static void main(String[] args)
@@ -77,7 +100,7 @@ public class blindOutgoingTransmission extends outgoingTransmission {
 		jk.set_broadcast_name_packets();
 		
 		Scanner from_user = new Scanner(System.in);
-		System.out.println(jk.identifier);
+		System.out.println(jk.blind_outgoing_transmission.identifier);
 		System.out.println("Press enter to continue");
 		String ret_code = from_user.nextLine();
 		
