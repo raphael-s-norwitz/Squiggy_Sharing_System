@@ -1,4 +1,4 @@
-package Raphael.Norwitz.Squiggy.Receiver;
+package raphael.norwitz.squiggy.receiver;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

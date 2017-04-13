@@ -1,14 +1,16 @@
 // Property of Raphael Norwitz unauthorized usage or copying is forbidden
 
-package Raphael.Norwitz.Squiggy.Receiver;
+package raphael.norwitz.squiggy.receiver;
 
 import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.WifiManager;
-import android.os.Bundle;
+import android.os.*;
+import android.os.Process;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
@@ -16,6 +18,8 @@ import android.widget.TextView;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketTimeoutException;
 import java.nio.charset.Charset;
@@ -140,8 +144,17 @@ public class GetFileInfo extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        // run the update thread
         try {
+            System.out.println("running update thread");
+            update_UI ud_UI = new update_UI("ud_thread");
+            ud_UI.start();
+        }
+        catch(Exception e){
+            e.printStackTrace();
+        }
+
+        // run the update thread
+       /* try {
             System.out.println("running update thread");
             update_thread ud_thread = new update_thread("ud_thread");
             ud_thread.start();
@@ -149,6 +162,7 @@ public class GetFileInfo extends AppCompatActivity {
         catch(Exception e){
             e.printStackTrace();
         }
+        */
 
 
         FloatingActionButton move_on = (FloatingActionButton) findViewById(R.id.fab);
@@ -231,24 +245,34 @@ public class GetFileInfo extends AppCompatActivity {
                     e.printStackTrace();
                 }*/
 
-                // updates packets
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
 
-                        total_packets.setText("Total Packets Received: " + Integer.toString(packet_counter));
-                    }
-                });
 
-                // updates UI
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        files_new.setText("Total Files Received: " + Integer.toString(file_counter));
-                        Name_Adapter.notifyDataSetChanged();
+                try {
+                    // updates packets
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
 
-                    }
-                });
+                            total_packets.setText("Total Packets Received: " + Integer.toString(packet_counter));
+
+                        }
+                    });
+
+                    // updates UI
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            files_new.setText("Total Files Received: " + Integer.toString(file_counter));
+                            Name_Adapter.notifyDataSetChanged();
+
+                        }
+                    });
+
+                    Thread.sleep(300);
+                }
+                catch(InterruptedException e){
+                    e.printStackTrace();
+                }
 
             }
 
@@ -298,10 +322,10 @@ public class GetFileInfo extends AppCompatActivity {
             {
 
                 // continue if all the packets have been processed
-                if (process_queue.isEmpty())
+                /*if (process_queue.isEmpty())
                 {
                     continue;
-                }
+                }*/
 
                 DatagramPacket sent_packet = null;
 
@@ -391,6 +415,8 @@ public class GetFileInfo extends AppCompatActivity {
 
             public void run_sock(String serverName, int port) {
 
+
+
                 // Try open up a multicast socket and recieve packets from the client
                 try {
 
@@ -398,13 +424,52 @@ public class GetFileInfo extends AppCompatActivity {
                     WifiManager.MulticastLock multicastLock = wifi_Manager.createMulticastLock("multicast_lock");
                     multicastLock.acquire();
 
-                    // open a multicast socket
+
+                    // Broadcast
+
                     MulticastSocket client_socket = new MulticastSocket(port);
+                    // DatagramSocket client_socket = new DatagramSocket(port);
+                    System.out.println("test for socket implementation");
+                    // InetAddress group = InetAddress.getByName("224.0.0.110");
+                    // client_socket.joinGroup(group);
 
                     // set timeout for blocking for 4 seconds
                     client_socket.setSoTimeout(4000);
 
                     client_socket.setBroadcast(true);
+
+
+
+                    // Multicast
+                    /*
+                    MulticastSocket client_socket = new MulticastSocket(port);
+                    // DatagramSocket client_socket = new DatagramSocket(port);
+                    System.out.println("test for socket implementation");
+                    InetAddress group = InetAddress.getByName("224.0.0.110");
+                    client_socket.joinGroup(group);
+                    System.out.println("Multicast ON");
+
+                    // set timeout for blocking for 4 seconds
+                    client_socket.setSoTimeout(4000);
+
+                    client_socket.setBroadcast(true);
+                    */
+
+
+                    // Unicast
+
+                    /*
+                    // MulticastSocket client_socket = new MulticastSocket(port);
+                    DatagramSocket client_socket = new DatagramSocket(port);
+                    System.out.println("test for socket implementation");
+                    // InetAddress group = InetAddress.getByName("224.0.0.110");
+                    // client_socket.joinGroup(group);
+
+                    // set timeout for blocking for 4 seconds
+                    client_socket.setSoTimeout(4000);
+
+                    // client_socket.setBroadcast(true);
+                    */
 
                     // the payload
                    byte[] msg = new byte[PACKET_LENGTH];
@@ -414,6 +479,15 @@ public class GetFileInfo extends AppCompatActivity {
 
                     // keep going until it's the right number of names
                     while (!GOT_ALL_NAMES) {
+
+                        /*try{
+                            Thread.sleep(1);
+                            System.out.println("Sleeping");
+                        }
+                        catch(Exception e){
+                            System.out.println("not liking sleep");
+                            e.printStackTrace();
+                        }*/
 
                         // create packet to receive
                         DatagramPacket sent_packet = new DatagramPacket(msg, msg.length);
@@ -436,10 +510,52 @@ public class GetFileInfo extends AppCompatActivity {
                         }
 
                         // packet received add it to the queue
-                        process_queue.add(sent_packet);
+                        // process_queue.add(sent_packet);
 
                         // keep track of number of packets recieved
                         packet_counter++;
+
+                        // get data from packet
+                        byte[] data = sent_packet.getData();
+
+                        // get packet index
+                        if(get_packet_index(data) != 0){
+                            continue;
+                        }
+
+                        // get file code
+                        int file_code = get_file_code(data);
+
+
+
+                        /*
+                        ADD SECURITY CHECK HERE
+                         */
+
+                        // continue if already recieved
+                        if(file_codes.contains((Integer) file_code))
+                        {
+                            continue;
+                        }
+
+                        // if not add values to fields to pass on:
+                        int file_max_idx = get_max_file_index(data);
+                        String received = get_name(data);
+                        int file_bytes_length = get_length_in_bytes(data);
+
+                        // add them to the relevant ArrayLists
+                        names_received.add(received + " - " + humanReadableByteCount(file_bytes_length, true) );
+                        file_codes.add((Integer) file_code);
+                        file_indexes.add((Integer) file_max_idx);
+                        file_lengths.add((Integer) file_bytes_length);
+                        names_to_send.add(received);
+
+
+                        // increment file counter
+                        file_counter++;
+
+
+
 
 
 
@@ -466,6 +582,8 @@ public class GetFileInfo extends AppCompatActivity {
 
         public void start() {
             t = new Thread(this, threadname);
+            android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
+           // android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_MORE_FAVORABLE );
             t.start();
 
         }

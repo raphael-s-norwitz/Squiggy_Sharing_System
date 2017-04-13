@@ -1,9 +1,10 @@
 // Property of Raphael Norwitz unauthorized usage or copying is forbidden
-package Raphael.Norwitz.Squiggy.Receiver;
+package raphael.norwitz.squiggy.receiver;
 
 import android.content.Intent;
 import android.net.wifi.WifiManager;
-import android.os.Bundle;
+import android.os.*;
+import android.os.Process;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,6 +17,8 @@ import android.widget.TextView;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketTimeoutException;
 import java.text.SimpleDateFormat;
@@ -265,9 +268,19 @@ public class TransferData extends AppCompatActivity {
             rcv_thread.start();
         }
         catch(Exception e){
-            System.out.println("here");
+            System.out.println("Receive thread refused");
             e.printStackTrace();
         }
+
+        /*try {
+            System.out.println("receiver thread 2");
+            receiver_thread rcv_thread_2 = new receiver_thread("receiver_thread 2", Host, 4664);
+            rcv_thread_2.start();
+        }
+        catch(Exception e){
+            System.out.println("Receive thread 2 refused");
+            e.printStackTrace();
+        }*/
 
         System.out.println("ran reciever thread");
 
@@ -418,19 +431,25 @@ public class TransferData extends AppCompatActivity {
                 // open a multicast socket
                 MulticastSocket client_socket = new MulticastSocket(port);
 
-               // System.out.println("BUFFER SIZE: " + Integer.toString(client_socket.getReceiveBufferSize()));
+                // Join arbitrary multicast group
+                // InetAddress group = InetAddress.getByName("224.0.0.1");
+                // client_socket.joinGroup(group);
 
-                client_socket.setReceiveBufferSize(Integer.MAX_VALUE);
+                // open a datagram socket
+                // DatagramSocket client_socket = new DatagramSocket(4848, InetAddress.getLocalHost());
+
+
+                // client_socket.setReceiveBufferSize(Integer.MAX_VALUE);
 
                 // client_socket.setReceiveBufferSize(4096);
 
-               //  System.out.println("BUFFER SIZE New: " + Integer.toString(client_socket.getReceiveBufferSize()));
 
 
                 // set timeout for blocking for 4 seconds
                 client_socket.setSoTimeout(4000);
 
-                client_socket.setBroadcast(true);
+                // client_socket.setBroadcast(true);
+
 
 
 
@@ -473,6 +492,7 @@ public class TransferData extends AppCompatActivity {
 
                 // keep going until it's the right number of names
                 while (!GOT_ALL_DATA) {
+                    System.out.println("in loop");
 
 
                     /*try{
@@ -720,7 +740,9 @@ public class TransferData extends AppCompatActivity {
 
         public void start() {
             t = new Thread(this, threadname);
-            t.setPriority(Thread.MAX_PRIORITY);
+            android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
+            // android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_MORE_FAVORABLE );
+            System.out.println("more favorable");
             t.start();
 
         }
@@ -759,6 +781,8 @@ public class TransferData extends AppCompatActivity {
                     @Override
                     public void run() {
 
+                        Name_Adapter.notifyDataSetChanged();
+
                         total_packets.setText("Total Packets Received: " + Integer.toString(packet_counter));
                         packets_dequeued_1.setText("Total Packets Processed: " + Integer.toString(in_process_counter));
                         packets_processed.setText("Total Packets Accepted: " + Integer.toString(out_process_counter));
@@ -771,7 +795,7 @@ public class TransferData extends AppCompatActivity {
                         /*for(int i = 0; i < file_display.length; i++){
                             file_display[i].setText(file_progress_list.get(i));
                         }*/
-                        Name_Adapter.notifyDataSetChanged();
+
 
                     }
                 });

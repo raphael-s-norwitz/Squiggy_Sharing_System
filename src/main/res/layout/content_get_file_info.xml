@@ -9,13 +9,20 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.shannonnorwitz.reciever.GetFileInfo"
+    tools:context="raphael.norwitz.squiggy.receiver.GetFileInfo"
     tools:showIn="@layout/activity_get_file_info">
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:orientation="vertical"
         >
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center" />
+            <!--android:layout_margin="@dimen/fab_margin" />
+            android:src="@android:drawable/ic_dialog_email"  /> -->
         <TextView
             android:id="@+id/packet_count"
             android:layout_width="match_parent"
