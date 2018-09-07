@@ -12,7 +12,6 @@ import java.util.Scanner;
  * The main difference lies in that this transmission contains the 
  * payloads wrapped in datagrams
  * 
- * All code written by and property of Raphael Norwitz
  * 
  */
 

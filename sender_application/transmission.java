@@ -3,7 +3,8 @@
  * This class represents the highest level superclass transmission of a set of files
  * using my broadcast system
  * 
- * All Code written by and property of Raphael Norwitz
+ * @author Raphael Norwitz
+ *
  * 
  */
 

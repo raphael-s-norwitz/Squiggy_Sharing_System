@@ -1,5 +1,3 @@
-// Property of Raphael Norwitz unauthorized usage or copying is forbidden
-
 package raphael.norwitz.squiggy.receiver;
 
 import android.content.Context;
@@ -473,7 +471,6 @@ public class GetFileInfo extends AppCompatActivity {
 
                     // the payload
                    byte[] msg = new byte[PACKET_LENGTH];
-                    // byte[] msg = new byte[4096];
 
 
 
@@ -583,7 +580,6 @@ public class GetFileInfo extends AppCompatActivity {
         public void start() {
             t = new Thread(this, threadname);
             android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-           // android.os.Process.setThreadPriority(Process.THREAD_PRIORITY_MORE_FAVORABLE );
             t.start();
 
         }
@@ -614,7 +610,6 @@ public class GetFileInfo extends AppCompatActivity {
         System.arraycopy(data, 24, name_bytes, 0, length);
         name = new String(name_bytes, Charset.forName("UTF-8")); // StandardCharsets.UTF_8);
 
-        // System.out.println("Name of file: " + name );
 
         return name;
 

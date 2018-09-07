@@ -32,7 +32,6 @@ import java.util.HashMap;
  * 
  * This class is a subclass of the packet populator which populates the name/meta data packes in the transfer
  * 
- * All code here is written by and property of Raphael Norwitz
  * 
  */
 public class namePopulator {

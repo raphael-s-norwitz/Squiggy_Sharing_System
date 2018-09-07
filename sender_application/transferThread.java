@@ -8,7 +8,6 @@ import java.net.SocketException;
  * 
  * This class represents the class used to run a thread as created by transferRound
  * 
- * all code written by and property of Raphael Norwitz
  * 
  */
 public class transferThread implements Runnable {

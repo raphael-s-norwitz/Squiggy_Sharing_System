@@ -2,7 +2,6 @@
  * 
  * This is the super class for all transmissions from the sender side.
  * 
- * All code written by and property of Raphael Norwitz
  * 
  */
 

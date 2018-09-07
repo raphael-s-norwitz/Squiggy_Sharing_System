@@ -1,5 +1,3 @@
-// Property of Raphael Norwitz unauthorized usage or copying is forbidden
-
 package raphael.norwitz.squiggy.receiver;
 
 import android.content.Intent;

@@ -41,14 +41,11 @@ import java.util.LinkedList;
  * 
  */
 
-public class test_sender_multicast {
+public class test_sender {
 	public static int PACKET_SIZE; // 4096;
 	
 
 	public static void main(String[] args) {
-		
-		
-		
 		
 		
 		Scanner from_user = new Scanner(System.in);
@@ -89,38 +86,26 @@ public class test_sender_multicast {
 		
 		DatagramPacket[][] files_packets = obtain_packets(path, PORT, security);
 		
-		DatagramPacket[][] files_packets_2 = obtain_packets(path, 4664, security);
-		
-		System.out.println(files_packets_2);
-		
 		LinkedList<DatagramPacket> first_round = get_initial_queue(files_packets);
 		
 		decode_packet(files_packets[0][0], security);
-		// decode_packet(files_packets[1][0], security);
-		// decode_packet(files_packets[2][0], security);
 		
 		try{
 			
 			MulticastSocket send_sock = new MulticastSocket();	
-			InetAddress group = InetAddress.getByName("224.0.0.1");
-			send_sock.joinGroup(group);
 			send_sock.setBroadcast(true);
 			int send_buffer = send_sock.getSendBufferSize();
 			System.out.println("Current System send buffer size: "+ Integer.toString(send_buffer));
-		// for(int j = 0; j < 500; j++){
-			// 3906250
 				
 			for(int i = 0; i < 50; i++)
 				{
 					// if(i %10 == 0)
-					//	Thread.sleep(100);
+						Thread.sleep(100);
 					DatagramPacket to_send = first_round.pop();
-					// System.out.println("Length of message: " + Integer.toString(to_send.getLength()));
 					send_sock.send(to_send);
 					first_round.add(to_send);
 					
 				}
-			//  }
 			send_sock.close();
 			
 			System.out.println("got out");
@@ -148,62 +133,21 @@ public class test_sender_multicast {
 		
 		LinkedList<DatagramPacket> transfer_round = get_sub_queue(files_packets, 1, max_length_of_file_packets);
 		
-		/* TEST Multi-Socket */
-		LinkedList<DatagramPacket> transfer_round_2 = get_sub_queue(files_packets_2, max_length_of_file_packets, 1);
-		System.out.println(transfer_round_2.get(1));
-		
-		//long timeBefore = System.time
 		
 		try{
 			
-			// Working for Multicast socket
 			MulticastSocket send_sock = new MulticastSocket();	
-			send_sock.setBroadcast(true); 
-			// InetAddress group = InetAddress.getByName("224.0.0.1");
-			// send_sock.joinGroup(group);
-			
-			/* TEST Unicast socket --> This works */
-			// DatagramSocket send_sock = new DatagramSocket();
-			
-			/* TEST Multi-Socket */
-			// MulticastSocket send_sock_2 = new MulticastSocket();
-			// send_sock_2.setBroadcast(true);
-			
-			
-				 
+			send_sock.setBroadcast(true);
+				 Thread.sleep(1000);
 				
-			for(int i = 0; i < 120000000; i++)
+			for(int i = 0; i < 1200000000; i++)
 				{
-					/*if(i %1000 == 0)
-					 	Thread.sleep(5000);*/
 					DatagramPacket to_send = transfer_round.pop();
 					
-					// System.out.println("sent");
-					
-					// DatagramPacket to_send_2 = transfer_round_2.pop();
-					
-					// Thread.sleep(10);
-					
-
-					// System.out.println("Length of message: " + Integer.toString(to_send.getLength()));
-				// for(int j = 0; j < 2; j++)
-					// {
 						send_sock.send(to_send);
-						
-						/* TEST Multi-Socket */
-						// send_sock_2.send(to_send_2);
-					// }
 					transfer_round.add(to_send);
 					
-					/* TEST Multi-Socket */
-					// transfer_round_2.add(to_send_2);
-					
-					/*if(i%100 == 0){
-						System.out.println(Integer.toString(j*500 + i));
-					}*/
-					
 				}
-			//  }
 			send_sock.close();
 			
 			System.out.println("got out");
@@ -215,105 +159,23 @@ public class test_sender_multicast {
 			
 		}
 		
-		/*Date current_date = new Date();
-		
-		for(int i = 0; i < files_packets.length; i++)
-		{
-			write_file(files_packets[i],"/Users/shannonnorwitz/cuwork/multicast_south_africa/recieved_files/", current_date );
-		}*/
-		
-		
-		
-		// System.out.println("Number of files: " + Integer.toString(i));
-		
-		/*try decoding some files */
-		/*
-		decode_packet(files_packets[1][0], security);
-		decode_packet(files_packets[1][1], security);
-		decode_packet(files_packets[2][1], security);
-		
-		Date current_date = new Date();
-		
-		* try writing file *
-		for(int i = 0; i < files_packets.length; i++)
-		{
-			write_file(files_packets[i],"/Users/shannonnorwitz/cuwork/multicast_south_africa/recieved_files/", current_date );
-		}
-
-		try{
-			MulticastSocket socket = socket = new MulticastSocket(4664);
-			
-			socket.setBroadcast(true);
-			
-			
-			
-			
-			byte[] data =  ((String) "hey!!\n").getBytes(); // msg.toString().getBytes();
-			
-			DatagramPacket packet;
-			
-			// String = "hey!!";
-			
-			
-			
-			long ip = 0;
-			
-			ip = pack(InetAddress.getByName("255.255.255.255").getAddress());
-			
-			
-			System.out.println(ip);
-			
-			
-			// packet = new DatagramPacket(data, data.length, InetAddress.getByName(ipToString(ip, true)), 4664);
-			packet = new DatagramPacket(data, data.length, InetAddress.getByName("255.255.255.255"), 4664);
-			
-			
-			
-			socket.send(packet);
-			
-			
-			socket.close();
-		
-		}
-		catch (Exception e){
-			System.out.println("fuckup");
-			e.printStackTrace();
-		}
-		*/
-		
+				
 		from_user.close();
 		
 
 	}
 	
-	/* no wrap around */
-	public static LinkedList<DatagramPacket> get_sub_queue(DatagramPacket[][] files_bytes, int start_index, int stop_index)
+	public static LinkedList<DatagramPacket> get_sub_queue(DatagramPacket[][] files_bytes, int min_index, int max_index)
 	{
 		
 		LinkedList<DatagramPacket> ret_val = new LinkedList<DatagramPacket>();
 		
-		if(start_index < stop_index)
-		{
-			for(int j = start_index; j < stop_index ; j++){
-				for(int i = 0; i < files_bytes.length; i ++){
-					if(j < files_bytes[i].length){
-						System.out.println("File: "+ Integer.toString(i) + ", Index: " + Integer.toString(j) + "");
-						ret_val.add(files_bytes[i][j]);
-					}
-				}
-			}
-		}
-		else
-		{
-			System.out.println("right 1");
-			for(int j = start_index-1; j >= stop_index ; j--){
-				System.out.println("here 2");
-				for(int i = 0; i < files_bytes.length; i ++){
-					System.out.println("here 1");
-					if(j < files_bytes[i].length && j > -1){
-						System.out.println("File 2: "+ Integer.toString(i) + ", Index: " + Integer.toString(j) + "");
-						ret_val.add(files_bytes[i][j]);
-					}
+		
+		for(int j = min_index; j < max_index ; j++){
+			for(int i = 0; i < files_bytes.length; i ++){
+				if(j < files_bytes[i].length){
+					System.out.println("File: "+ Integer.toString(i) + ", Index: " + Integer.toString(j) + "");
+					ret_val.add(files_bytes[i][j]);
 				}
 			}
 		}
@@ -496,19 +358,10 @@ public class test_sender_multicast {
 				
 				try {
 					
-					// generic address
-					// files_packets[i][j] = new DatagramPacket(payload, payload.length, InetAddress.getByName("255.255.255.0"), PORT);
 					
 					// broadcast address
-					//files_packets[i][j] = new DatagramPacket(payload, payload.length, b_cast_addr, PORT);
+					files_packets[i][j] = new DatagramPacket(payload, payload.length, b_cast_addr, PORT);
 					
-					// regular datagram for test
-					// files_packets[i][j] = new DatagramPacket(payload, payload.length, InetAddress.getByName("192.168.1.101"), PORT);
-					
-					// Multicast socket
-					files_packets[i][j] = new DatagramPacket(payload, payload.length, InetAddress.getByName("224.0.0.1"), PORT);
-					
-					// System.out.println("Packet " + Integer.toString(j+1) + " was created for file index " + Integer.toString(i+1));
 				} catch (Exception e) { // UnknownHostException e) {
 					System.out.println("Packet creation failed");
 					e.printStackTrace();
@@ -603,17 +456,13 @@ public class test_sender_multicast {
 			
 			try{
 				FileOutputStream output = new FileOutputStream(basepath + "/" + transfer_name + "/" + file_name, true);
-				// FileOutputStream output = new FileOutputStream(basepath + "/" + file_name, true);
 
 				byte[] data_value = get_payload(p);
-				// String data_str = new String(data_value, StandardCharsets.UTF_8);
 				output.write(data_value);
 				output.close();
-				// System.out.println("worked: ");
 			}
 			catch(NullPointerException e)
 			{
-				// System.out.println("Reached maximum index");
 				e.printStackTrace();
 				break;
 				
@@ -634,7 +483,6 @@ public class test_sender_multicast {
 		// get data from packet
 		byte [] data = sent.getData();
 		
-		// System.out.println("All data: " + Arrays.toString(data));
 		
 		// extract security code
 		byte [] authentication = new byte[4];
@@ -664,7 +512,6 @@ public class test_sender_multicast {
 		System.arraycopy(data, 8, index_bytes, 0, 4);
 		int index = byteArrayToInt(index_bytes);
 		
-		// System.out.println("Current index: " + index);
 
 		// extract max index
 		byte [] max_index_bytes = new byte[4];
@@ -706,13 +553,6 @@ public class test_sender_multicast {
 			
 			System.out.println("Name of file: " + name );
 			
-			/* get mod packet length
-			byte[] mod_length_bytes = new byte[4];
-			System.arraycopy(data, 24, mod_length_bytes, 0, 4);
-			int mod_length = byteArrayToInt(mod_length_bytes);
-			
-			System.out.println("Mod length: " + Integer.toString(mod_length));
-			*/
 			
 			// extract data
 			payload = new byte[data.length - 20 -length];
@@ -729,9 +569,6 @@ public class test_sender_multicast {
 	
 		}
 		
-		// String payload_string = new String(payload, StandardCharsets.UTF_8);
-		
-		// System.out.println("Payload: " + Arrays.toString(payload));	
 		
 		
  	}
@@ -992,47 +829,3 @@ public class test_sender_multicast {
 }
 
 
-
-/*
-BufferedReader inFromUser =  new BufferedReader(new InputStreamReader(System.in)); 
-DatagramSocket clientSocket = null;
-
-try {
-	System.out.println("here 3");
-	clientSocket = new DatagramSocket();
-	clientSocket.setBroadcast(true);
-} catch (SocketException e) {
-	// TODO Auto-generated catch block
-	e.printStackTrace();
-	System.out.println("not here 3");
-}
-String sentence = "";
-byte[] sendData = new byte[1024];
-try {
-	System.out.println("here 2");
-	sentence = inFromUser.readLine();
-} catch (IOException e) {
-	// TODO Auto-generated catch block
-	e.printStackTrace();
-	System.out.println("not here 2");
-}
-sendData = sentence.getBytes();
-InetAddress group = null;
-try {
-	group = InetAddress.getByName("10.10.0.0");
-	System.out.println("here 1");
-} catch (UnknownHostException e) {
-	// TODO Auto-generated catch block
-	e.printStackTrace();
-	System.out.println("not here 1");
-}
-DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, group, 9876); 
-try {
-	clientSocket.send(sendPacket);
-	System.out.println("sent");
-} catch (IOException e) {
-	// TODO Auto-generated catch block
-	e.printStackTrace();
-}
-clientSocket.close();
-*/

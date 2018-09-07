@@ -3,7 +3,6 @@
  * This class contains the execution code for a sender thread for both 
  * a gui and for a Thread which hopefully can be executed from with Android
  * 
- *  All code is written by and property of Raphael Norwitz
  * 
  */
 

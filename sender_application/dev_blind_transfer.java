@@ -4,7 +4,6 @@
  * 
  * by: Raphael Norwitz
  * 
- * Code is property of Raphael Norwitz
  * 
  */
 import java.util.*;

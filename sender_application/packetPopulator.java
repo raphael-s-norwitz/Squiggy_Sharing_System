@@ -8,7 +8,8 @@ import java.util.HashMap;
  * 
  * Given an arraylist, it creates the headers for each file in the transfer
  * 
- * All code is written by and property of Raphael Norwitz
+ * @author Raphael Norwitz
+ * 
  * 
  */
 
